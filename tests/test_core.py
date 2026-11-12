@@ -27,6 +27,23 @@ def test_scanned_or_empty_pdf_has_actionable_error():
         raise AssertionError("Expected an empty-text PDF error")
 
 
+def test_pdf_input_guards(monkeypatch):
+    import retrieval.pdf_loader as loader
+    try:
+        loader.extract_pages(b"not a pdf")
+    except ValueError as exc:
+        assert "valid PDF" in str(exc)
+    else:
+        raise AssertionError("Expected a PDF signature error")
+    monkeypatch.setattr(loader, "MAX_PDF_BYTES", 8)
+    try:
+        loader.extract_pages(b"%PDF-1.7 payload")
+    except ValueError as exc:
+        assert "too large" in str(exc)
+    else:
+        raise AssertionError("Expected an upload size error")
+
+
 def test_embeddings_router_and_pptx():
     vectors = HashEmbeddings().embed_documents(["research method", "research method"])
     assert len(vectors[0]) == 384 and vectors[0] == vectors[1]

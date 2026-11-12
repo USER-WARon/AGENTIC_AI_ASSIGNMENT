@@ -167,6 +167,10 @@ Select-String -Path .\export\pptx_exporter.py -Pattern "def parse_slides"
 
 PaperPilot extracts embedded/selectable text. OCR the PDF first, save a searchable copy, and upload that copy.
 
+## Security and privacy
+
+The uploader is limited to 30 MB, 300 pages, and 1.5 million extracted characters. Paper text chunks are stored locally in `.paperpilot_chroma/`. For generation, retrieved excerpts and your question are sent to OpenRouter and the selected model provider. Keep the app on localhost and do not upload confidential documents unless you accept that data flow. Keep your API key in `.env`, never in source or screenshots. Review [SECURITY_REVIEW.md](SECURITY_REVIEW.md) for the code-review findings and remaining limits.
+
 ## Project architecture
 
 ```mermaid

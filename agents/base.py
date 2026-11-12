@@ -2,6 +2,7 @@
 from langchain_core.runnables import RunnableLambda
 from prompts.templates import make_chain, verify_output
 from retrieval.vector_store import retrieve
+from config import MAX_QUESTION_CHARS
 
 
 class PaperAgent:
@@ -25,4 +26,8 @@ class PaperAgent:
         return verify_output(answer, getattr(self, "_last_context", " "))
 
     def run(self, question: str) -> str:
+        if not isinstance(question, str) or not question.strip():
+            raise ValueError("Enter a question or task first.")
+        if len(question) > MAX_QUESTION_CHARS:
+            raise ValueError(f"Request is too long. Keep it under {MAX_QUESTION_CHARS} characters.")
         return self.workflow.invoke({"question": question})
